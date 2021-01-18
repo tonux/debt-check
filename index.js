@@ -24,8 +24,6 @@ const options = yargs
 
 const path = options.name;
 
-const pathMessage = `-> The file , ${options.name}!`;
-
 var file = fs.createReadStream(path).on('error', onError);
     
 file.pipe(csv(['payer', 'creditor', 'amount']))
@@ -37,15 +35,8 @@ file.pipe(csv(['payer', 'creditor', 'amount']))
       console.log(
         chalk.green('Process successfully completed')
       );
-      // console.log(results[0].amount);
-  
-      // toFixed(2);
-  
-      var map = new Map();
-      treatment(map);
-      showOutput(map);
+      treatment(treatmentCallback, failureCallback);
     });
-
 
 function showOutput(results){
     var output = [];
@@ -56,7 +47,6 @@ function showOutput(results){
           output.push({ description, amount })
   
       })
-  
       console.table(output);
 }
 
@@ -66,7 +56,7 @@ function onError(err) {
       );
 }
 
-function treatment(map){
+function treatment2(map){
     results.forEach(element => {
         var new_element= element.payer+'|'+element.creditor
         if (map.get(new_element) != undefined){
@@ -75,4 +65,72 @@ function treatment(map){
         }
         map.set(new_element, element)
     })
+
+    return map;
 }
+
+
+function treatment(treatmentCallback, failureCallback){
+    var data = treatmentCallback(results);
+    if (data.size > 0){
+        showOutput(data);
+    } else{
+        failureCallback(data);
+    }
+}
+
+function treatmentCallback(){
+    var map  = new Map();
+    var lineError = 0;
+    var indice = 1;
+    results.forEach(element => {
+        if (checkValidElement(element)){
+            map  = new Map();
+            lineError = indice;
+        } else{
+            var new_element= element.payer+'|'+element.creditor
+            if (map.get(new_element) != undefined){
+            var elt = map.get(new_element);
+            element.amount = parseFloat(elt.amount) + parseFloat(element.amount) ;
+            }
+            map.set(new_element, element)
+        }
+        indice++;
+        
+    })
+    if (lineError> 0){
+        return lineError;
+    }
+    return map;
+    
+}
+
+
+function successCallback(results) {
+    var output = [];
+    results.forEach((value, key) => {
+  
+          var description= key.replace('|', ',')
+          var amount = parseFloat(value.amount).toFixed(2)
+          output.push({ description, amount })
+  
+      })
+      console.table(output);
+  }
+  
+  function failureCallback(lineError) {
+    console.error("The operation failed check the file at line : "+lineError);
+  }
+
+  function checkValidElement(element){
+    for (const [key, value] of Object.entries(element)) {
+ 
+    if ( (key === "payer" && !value) || ( key === "amount" && !isNumber(value) )){
+        return true;
+    }
+    }
+  }
+
+
+function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
+  
