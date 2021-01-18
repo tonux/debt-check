@@ -7,11 +7,6 @@ The goal is to build a very small self-contained "real world" application to sho
 * Node 8
 * Git
 
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
-```
-
 ## Common setup
 
 Clone the repo and install the dependencies.
