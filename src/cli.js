@@ -19,8 +19,8 @@ function parseArgumentsIntoOptions() {
     );
 
     var options = yargs
-        .usage("Usage: -p <name>")
-        .option("p", { alias: "name", describe: "Your path file", type: "string", demandOption: true })
+        .usage("Usage: -f <name>")
+        .option("f", { alias: "name", describe: "Your path file", type: "string", demandOption: true })
         .argv;
 
     return options;
