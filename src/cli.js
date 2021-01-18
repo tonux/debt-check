@@ -40,7 +40,7 @@ function treatmentCallback() {
     var lineError = 0;
     var index = 1;
 
-    results.forEach(element => {
+    results.forEach(function(element){ 
         if (utils.checkValidElement(element)) {
             map = new Map();
             lineError = index;
@@ -53,8 +53,8 @@ function treatmentCallback() {
             map.set(new_element, element)
         }
         index++;
+    });
 
-    })
     if (lineError > 0) {
         return lineError;
     }
