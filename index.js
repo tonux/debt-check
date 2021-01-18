@@ -56,19 +56,6 @@ function onError(err) {
       );
 }
 
-function treatment2(map){
-    results.forEach(element => {
-        var new_element= element.payer+'|'+element.creditor
-        if (map.get(new_element) != undefined){
-            var elt = map.get(new_element);
-            element.amount = parseFloat(elt.amount) + parseFloat(element.amount) ;
-        }
-        map.set(new_element, element)
-    })
-
-    return map;
-}
-
 
 function treatment(treatmentCallback, failureCallback){
     var data = treatmentCallback(results);
@@ -105,20 +92,7 @@ function treatmentCallback(){
     
 }
 
-
-function successCallback(results) {
-    var output = [];
-    results.forEach((value, key) => {
-  
-          var description= key.replace('|', ',')
-          var amount = parseFloat(value.amount).toFixed(2)
-          output.push({ description, amount })
-  
-      })
-      console.table(output);
-  }
-  
-  function failureCallback(lineError) {
+function failureCallback(lineError) {
     console.error("The operation failed check the file at line : "+lineError);
   }
 
