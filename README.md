@@ -11,16 +11,32 @@ The goal is to build a very small self-contained "real world" application to sho
 
 Clone the repo and install the dependencies.
 
-git clone [https://github.com/tonux/debt-check.git](https://github.com/tonux/debt-check.git)
-cd debt-check
+* git clone [https://github.com/tonux/debt-check.git](https://github.com/tonux/debt-check.git)
 
+* cd debt-check
+
+* install the dependencies
 ```shell script
 npm install
 ```
 
+* Run the command from anywhere
 ```shell script
 npm install -g .
 ```
+
+## Run the app from command line
+
+```shell script
+debt-check -p  path_to_file
+```
+
+You can execute the order in the directory where your file is located. 
+Example : in the project directory there is a data.csv file
+```shell script
+debt-check -p  data.csv
+```
+
 
 ## Run the executable
 
