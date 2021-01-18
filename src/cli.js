@@ -1,4 +1,3 @@
-
 const chalk = require("chalk");
 const clear = require('clear');
 const figlet = require('figlet');
@@ -6,6 +5,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const results = [];
 
+const utils = require('./utils');
 
 function parseArgumentsIntoOptions() {
     const yargs = require("yargs");
@@ -26,22 +26,10 @@ function parseArgumentsIntoOptions() {
     return options;
 }
 
-
-function showOutput(results) {
-    var output = [];
-    results.forEach((value, key) => {
-        var description = key.replace('|', ',')
-        var amount = parseFloat(value.amount).toFixed(2)
-        output.push({ description, amount })
-
-    })
-    console.table(output);
-}
-
 function treatment(treatmentCallback, failureCallback) {
     var data = treatmentCallback(results);
     if (data.size > 0) {
-        showOutput(data);
+        utils.showOutput(data);
     } else {
         failureCallback(data);
     }
@@ -50,12 +38,12 @@ function treatment(treatmentCallback, failureCallback) {
 function treatmentCallback() {
     var map = new Map();
     var lineError = 0;
-    var indice = 1;
+    var index = 1;
 
     results.forEach(element => {
-        if (checkValidElement(element)) {
+        if (utils.checkValidElement(element)) {
             map = new Map();
-            lineError = indice;
+            lineError = index;
         } else {
             var new_element = element.payer + '|' + element.creditor
             if (map.get(new_element) != undefined) {
@@ -64,7 +52,7 @@ function treatmentCallback() {
             }
             map.set(new_element, element)
         }
-        indice++;
+        index++;
 
     })
     if (lineError > 0) {
@@ -84,18 +72,9 @@ function onError(err) {
     );
 }
 
-function checkValidElement(element) {
-    for (const [key, value] of Object.entries(element)) {
 
-        if ((key === "payer" && !value) || (key === "amount" && !isNumber(value))) {
-            return true;
-        }
-    }
-}
-
-function isNumber(n) { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); }
-
-function cli() {
+const cli = () => {    
+      
     let options = parseArgumentsIntoOptions();
 
     const path = options.name;
@@ -115,4 +94,5 @@ function cli() {
         });
 
 }
-module.exports = cli();
+
+exports.cli = cli;
