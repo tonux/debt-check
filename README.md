@@ -15,6 +15,11 @@ Clone the repo and install the dependencies.
 
 * cd debt-check
 
+* Run test
+```shell script
+mocha test
+```
+
 * install the dependencies
 ```shell script
 npm install
