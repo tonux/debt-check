@@ -12,14 +12,12 @@ const checkValidElement = (element) => {
 
 const showOutput = (results) => {
     var output = [];
-    results.forEach((value, key) => {
+    results.forEach(function(value, key){ 
         var payer = key.split('|')[0];
         var creditor = key.split('|')[1];
         var amount = parseFloat(value.amount).toFixed(2)
         output.push({ payer, creditor, amount })
-
     });
-
     writeToCSVFile(output);
 
 }
