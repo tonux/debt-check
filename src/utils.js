@@ -1,3 +1,6 @@
+const fs = require('fs');
+const chalk = require("chalk");
+
 const checkValidElement = (element) => {
     for (const [key, value] of Object.entries(element)) {
 
@@ -15,12 +18,36 @@ const showOutput = (results) => {
         var amount = parseFloat(value.amount).toFixed(2)
         output.push({ payer, creditor, amount })
 
-    })
-    console.table(output);
+    });
+
+    writeToCSVFile(output);
+
 }
 
 const isNumber = (n) => {
     return /^-?[\d.]+(?:e-?\d+)?$/.test(n);
+}
+
+function writeToCSVFile(output) {
+    const filename = 'output.csv';
+    fs.writeFile(filename, extractAsCSV(output), err => {
+      if (err) {
+        console.log('Error writing to csv file', err);
+      } else {
+        console.log(
+            chalk.green(`====> Saved as ${filename}`)
+        );
+        console.table(output);
+      }
+    });
+  }
+
+function extractAsCSV(output) {
+    const header = ["Payer, Creditor, Amount"];
+    const rows = output.map(element =>
+       `${element.payer}, ${element.creditor}, ${element.amount}`
+    );
+    return header.concat(rows).join("\n");
 }
 
 exports.checkValidElement = checkValidElement;
